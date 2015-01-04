@@ -1,11 +1,11 @@
 #![no_std]
 #![allow(ctypes)]
-#![feature(lang_items)]
 
 extern crate core;
 
-use core::iter;
+use core::iter::Iterator;
 use core::str::StrExt;
+use core::option::Option;
 
 use core::kinds::Copy;
 
@@ -28,11 +28,6 @@ enum Color {
     LightPink  = 13,
     Yellow     = 14,
     White      = 15,
-}
-
-enum Option<T> {
-    None,
-    Some(T)
 }
 
 struct IntRange {
@@ -70,22 +65,25 @@ fn clear_screen(background: Color) {
 }
 
 fn print_string(string: &str) {
-        unsafe {
-            let character = 'A' as u8;
-            *((0xb8000) as *mut u8) = character;
-            *((0xb8000+1) as *mut u8) = 0x0f;
+    let mut bytes = string.bytes();
+    let mut count = 0;
+    loop {
+        match bytes.next() {
+            Option::Some(x) => {
+                unsafe {
+                    *((0xb8000 + count) as *mut u8) = x as u8;
+                    *((0xb8000 + count + 1) as *mut u8) = 0x0f;
+                }
+                count = count + 1;
+            },
+            Option::None =>{break}
         }
-    let bytes = string.chars();
-        unsafe {
-            let character = 'B' as u8;
-            *((0xb8000) as *mut u8) = character;
-            *((0xb8000+1) as *mut u8) = 0x0f;
-        }
+    }
 }
 
 #[no_mangle]
 #[no_split_stack]
 pub fn main() {
     clear_screen(Color::LightRed);
-    print_string("A");
+    print_string("Hello world");
 }
