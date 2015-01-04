@@ -1,12 +1,13 @@
 #![no_std]
 #![allow(ctypes)]
-
 #![feature(lang_items)]
-#[lang="sized"]
-trait Sized {}
 
-#[lang="copy"]
-trait Copy {}
+extern crate core;
+
+use core::iter;
+use core::str::StrExt;
+
+use core::kinds::Copy;
 
 impl Copy for Color {}
 
@@ -68,8 +69,23 @@ fn clear_screen(background: Color) {
     }
 }
 
+fn print_string(string: &str) {
+        unsafe {
+            let character = 'A' as u8;
+            *((0xb8000) as *mut u8) = character;
+            *((0xb8000+1) as *mut u8) = 0x0f;
+        }
+    let bytes = string.chars();
+        unsafe {
+            let character = 'B' as u8;
+            *((0xb8000) as *mut u8) = character;
+            *((0xb8000+1) as *mut u8) = 0x0f;
+        }
+}
+
 #[no_mangle]
 #[no_split_stack]
 pub fn main() {
     clear_screen(Color::LightRed);
+    print_string("A");
 }
