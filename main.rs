@@ -71,10 +71,10 @@ fn print_string(string: &str) {
         match bytes.next() {
             Option::Some(x) => {
                 unsafe {
-                    *((0xb8000 + count) as *mut u8) = x as u8;
+                    *((0xb8000 + count) as *mut u8) = x;
                     *((0xb8000 + count + 1) as *mut u8) = 0x0f;
                 }
-                count = count + 1;
+                count = count + 2;
             },
             Option::None =>{break}
         }
