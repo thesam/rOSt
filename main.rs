@@ -80,14 +80,15 @@ fn print_string(string: &str) {
             Option::None =>{break}
         }
     }
+    move_cursor(0,string.len() as u8);
 }
 
 fn move_cursor(row: u8, col: u8) {
-    let pos = row*80 + col;
+    let pos:u16 = (row*80 + col) as u16;
     outb(0x3D4,15);
-    outb(0x3D5,pos);
+    outb(0x3D5,(pos & 0xff) as u8);
     outb(0x3D4,14);
-    outb(0x3D5,pos);
+    outb(0x3D5,((pos >> 8) & 0xff) as u8);
 }
 
 fn outb(port:u16, value:u8) {
@@ -106,6 +107,5 @@ fn outb(port:u16, value:u8) {
 #[no_split_stack]
 pub fn main() {
     clear_screen(Color::LightRed);
-    move_cursor(0,0);
     print_string("Hello world");
 }
