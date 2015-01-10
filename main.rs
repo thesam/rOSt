@@ -1,5 +1,6 @@
 #![no_std]
 #![allow(ctypes)]
+#![feature(asm)]
 
 extern crate core;
 
@@ -7,7 +8,7 @@ use core::iter::Iterator;
 use core::str::StrExt;
 use core::option::Option;
 
-use core::kinds::Copy;
+use core::marker::Copy;
 
 impl Copy for Color {}
 
@@ -81,9 +82,30 @@ fn print_string(string: &str) {
     }
 }
 
+fn move_cursor(row: u8, col: u8) {
+    let pos = row*80 + col;
+    outb(0x3D4,15);
+    outb(0x3D5,pos);
+    outb(0x3D4,14);
+    outb(0x3D5,pos);
+}
+
+fn outb(port:u16, value:u8) {
+    unsafe {
+        asm!(
+        "out $0,$1"
+        :
+        : "{ax}"(value), "{dx}"(port)
+        :
+        :
+        )
+    }
+}
+
 #[no_mangle]
 #[no_split_stack]
 pub fn main() {
     clear_screen(Color::LightRed);
+    move_cursor(0,0);
     print_string("Hello world");
 }
