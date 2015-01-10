@@ -63,8 +63,8 @@ gdtr:
     dd gdt                  ; offset
 
 idtr:
-    dw (idt_end - idt) + 1  ; size
-    dd idt                  ; offset
+    dw 0
+    dd 0
 
 gdt:
     ; null entry
@@ -84,10 +84,6 @@ gdt:
     db 0x4f         ; flags/(limit 16:19). flag is set to 32 bit protected mode
     db 0x00         ; base 24:31
 gdt_end:
-
-idt:
-; TODO: Add keyboard interrupt
-idt_end:
 
 times 510-($-$$) db 0
 db 0x55

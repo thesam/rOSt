@@ -97,9 +97,18 @@ fn outb(port:u16, value:u8) {
         "out $0,$1"
         :
         : "{ax}"(value), "{dx}"(port)
-        :
-        :
         )
+    }
+}
+
+fn lidt() {
+    struct IDTR {
+        length: u16,
+        base: u32
+    }
+    let idtr = IDTR {length: 0, base: 0};
+    unsafe {
+        asm!("lidt ($0)"::"{ax}"(&idtr))
     }
 }
 
@@ -108,4 +117,5 @@ fn outb(port:u16, value:u8) {
 pub fn main() {
     clear_screen(Color::LightRed);
     print_string("Hello world");
+    lidt();
 }
