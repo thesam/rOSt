@@ -101,13 +101,32 @@ fn outb(port:u16, value:u8) {
     }
 }
 
+struct IDTEntry {
+    offset_lo: u16,
+    selector: u16,
+    zero: u8,
+    type_attr: u8,
+    offset_hi: u16       
+}
+
+impl Copy for IDTEntry {}
+
+fn empty_entry() -> IDTEntry {
+    IDTEntry {offset_lo: 0, selector: 0, zero: 0, type_attr: 0, offset_hi: 0}     
+}
+
 fn lidt() {
+    struct IDT {
+        entries: [IDTEntry; 256]
+    }
     struct IDTR {
         length: u16,
         base: u32
     }
-    let idtr = IDTR {length: 0, base: 0};
+    let mut idt = IDT {entries: [empty_entry();256]};
     unsafe {
+        let idt_addr:*mut IDT = &mut idt;
+        let idtr = IDTR {length: 64*256, base: (idt_addr) as u32};
         asm!("lidt ($0)"::"{ax}"(&idtr))
     }
 }
