@@ -22,7 +22,7 @@ floppy.img: loader.bin main.bin
 loader.bin: loader.asm
 	$(NASM) -o $@ -f bin $<
 
-main.bin: linker.ld main.o lib.o
+main.bin: linker.ld main.o
 	$(LD) -m elf_i386 -o $@ -T $^
 
 run: floppy.img

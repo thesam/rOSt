@@ -1,5 +1,7 @@
 #![no_std]
-#![allow(ctypes)]
+
+#![allow(improper_ctypes)]
+
 #![feature(asm)]
 
 extern crate core;
@@ -12,6 +14,7 @@ use core::marker::Copy;
 
 impl Copy for Color {}
 
+#[allow(dead_code)]
 enum Color {
     Black      = 0,
     Blue       = 1,
@@ -32,12 +35,12 @@ enum Color {
 }
 
 struct IntRange {
-    cur: int,
-    max: int
+    cur: isize,
+    max: isize
 }
 
 impl IntRange {
-    fn next(&mut self) -> Option<int> {
+    fn next(&mut self) -> Option<isize> {
         if self.cur < self.max {
             self.cur += 1;
             Option::Some(self.cur - 1)
@@ -47,7 +50,7 @@ impl IntRange {
     }
 }
 
-fn range(lo: int, hi: int) -> IntRange {
+fn range(lo: isize, hi: isize) -> IntRange {
     IntRange { cur: lo, max: hi }
 }
 
@@ -132,9 +135,9 @@ fn lidt() {
 }
 
 #[no_mangle]
-#[no_split_stack]
+#[no_stack_check]
 pub fn main() {
     clear_screen(Color::LightRed);
     print_string("Hello world");
-    lidt();
+    //lidt();
 }
