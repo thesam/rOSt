@@ -2,4 +2,5 @@ section .text
 global memset
 
 memset:
-    nop
+    mov eax,0xDEADBEEF
+    ret

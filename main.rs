@@ -134,10 +134,21 @@ fn lidt() {
     }
 }
 
+extern {
+    fn memset() -> isize;
+}
+
+fn test() {
+    unsafe {
+        let x = memset();
+    }
+}
+
 #[no_mangle]
 #[no_stack_check]
 pub fn main() {
     clear_screen(Color::LightRed);
     print_string("Hello world");
+    test();
     //lidt();
 }

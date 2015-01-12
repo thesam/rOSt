@@ -12,7 +12,7 @@ all: floppy.img
 .rs.o:
 	$(RUSTC) -O --target i686-unknown-linux-gnu --crate-type lib -o $@ --emit obj -C relocation-model=static $<
 
-.asm.o: lib.asm
+.asm.o:
 	$(NASM) -f elf32 -o $@ $<
 
 floppy.img: loader.bin main.bin
