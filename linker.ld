@@ -8,8 +8,12 @@ MEMORY {
 SECTIONS {
     . = 0x7e00;
 
-    .text : {
-        *(.text)
+    .main : {
+        main.o(*)
+    } >ram
+
+    .lib : {
+        lib.o(*)
     } >ram
 
     /DISCARD/ : {
