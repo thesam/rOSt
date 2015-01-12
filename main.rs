@@ -114,23 +114,49 @@ struct IDTEntry {
 
 impl Copy for IDTEntry {}
 
-fn empty_entry() -> IDTEntry {
-    IDTEntry {offset_lo: 0, selector: 0, zero: 0, type_attr: 0, offset_hi: 0}     
+struct IDT {
+    entries: [IDTEntry; 256]
+}
+struct IDTR {
+    length: u16,
+    base: u32
 }
 
+static mut idt : IDT = IDT {entries: [IDTEntry {offset_lo: 0, selector: 0, zero: 0, type_attr: 0, offset_hi: 0};256]};
+
 fn lidt() {
-    struct IDT {
-        entries: [IDTEntry; 256]
-    }
-    struct IDTR {
-        length: u16,
-        base: u32
-    }
-    let mut idt = IDT {entries: [empty_entry();256]};
     unsafe {
         let idt_addr:*mut IDT = &mut idt;
         let idtr = IDTR {length: 64*256, base: (idt_addr) as u32};
         asm!("lidt ($0)"::"{ax}"(&idtr))
+    }
+}
+
+extern fn int_handler() {
+    clear_screen(Color::Blue);
+}
+
+fn init_int_49() {
+    unsafe {
+        let fnptr:extern fn() = int_handler;
+        let fnptr_addr = fnptr as u32;
+        idt.entries[49] = IDTEntry {
+            offset_lo: fnptr_addr as u16,
+            selector: 0,
+            zero: 0,
+            type_attr: 0x8e,
+            offset_hi: (fnptr_addr >> 16) as u16
+        };
+    }
+}
+
+extern {
+    fn asm_int_49();
+}
+
+fn int_49() {
+    unsafe {
+        asm_int_49();
     }
 }
 
@@ -140,5 +166,7 @@ pub fn main() {
     clear_screen(Color::LightRed);
     print_string("Hello world");
     lidt();
+    init_int_49();
+    int_49();
     print_string("End world");
 }

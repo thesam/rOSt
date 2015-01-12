@@ -1,5 +1,6 @@
 section .text
 global memset
+global asm_int_49
 
 memset:
     push ebp
@@ -29,4 +30,8 @@ memset_loop:
 
     mov esp, ebp
     pop ebp
+    ret
+
+asm_int_49:
+    int 49
     ret
