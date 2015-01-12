@@ -26,7 +26,7 @@ main.bin: linker.ld main.o lib.o
 	$(LD) -m elf_i386 -o $@ -T $^
 
 run: floppy.img
-	$(QEMU) -fda $<
+	$(QEMU) -s -fda $<
 
 clean:
 	rm -f *.bin *.o *.img
