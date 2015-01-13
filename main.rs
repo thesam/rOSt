@@ -170,7 +170,7 @@ pub fn main() {
 //    lidt();
 //    init_int_49();
 //    int_49(asm_int_handler);
-    print_int(1234567890);
+    print_int(0xDEADBEEF);
 }
 
 fn int_handler() {
@@ -183,28 +183,33 @@ fn int_handler2() {
 
 fn print_int(x:u32) {
     let mut left = x;
-    let mut out:[u8;20] = [10;20];
+    let mut out:[u8;8] = [10;8];
     let mut pos = 0; 
 
     loop {
-        let rem = (left % 10) as u8;
+        let rem = (left % 16) as u8;
         out[pos] = rem;
         pos = pos + 1;
-        if (left < 10) {
+        if (left < 16) {
             break;
         } else {
-            left = left / 10;
+            left = left / 16;
         }
     }
 
 
     let mut i = 0;
     loop {
-        if (i == 20) {
+        if (i == 8) {
             break
         }
         unsafe {
-            *((0xb8000 + i*2) as *mut u8) = out[20-1-i] + 48;
+            let val = out[8-1-i];
+            if (val < 10) {
+                *((0xb8000 + i*2) as *mut u8) = val + 48;
+            } else {
+                *((0xb8000 + i*2) as *mut u8) = (val - 10) + 65;
+            }
             *((0xb8000 + i*2 + 1) as *mut u8) = 0x0f;
         }            
         i = i + 1;   
