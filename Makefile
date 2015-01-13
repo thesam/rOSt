@@ -28,5 +28,8 @@ main.bin: linker.ld main.o lib.o
 run: floppy.img
 	$(QEMU) -s -fda $<
 
+debug: floppy.img
+	$(QEMU) -s -S -fda $<
+
 clean:
 	rm -f *.bin *.o *.img
