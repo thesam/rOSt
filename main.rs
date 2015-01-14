@@ -157,16 +157,6 @@ fn init_interrupt_handlers() {
     }
 }
 
-extern {
-    fn asm_int_49();
-}
-
-fn int_49() {
-    unsafe {
-        asm_int_49();
-    }
-}
-
 fn init_pic() {
 	outb(0x20 , 0x11);
 	outb(0xA0 , 0x11);
@@ -198,7 +188,6 @@ pub fn main() {
     init_pic();
     enable_keyboard_interrupt();
     init_interrupt_handlers();
-    //int_49();
     print_string("End world");
 }
 

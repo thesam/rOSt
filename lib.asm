@@ -1,6 +1,5 @@
 section .text
 global memset
-global asm_int_49
 global asm_int_handler
 
 extern int_handler
@@ -33,10 +32,6 @@ memset_loop:
 
     mov esp, ebp
     pop ebp
-    ret
-
-asm_int_49:
-    int 49
     ret
 
 asm_int_handler:
