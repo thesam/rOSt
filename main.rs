@@ -117,6 +117,9 @@ impl Copy for IDTEntry {}
 struct IDT {
     entries: [IDTEntry; 256]
 }
+
+// Must be packed for lidt to read it correctly.
+#[repr(packed)]
 struct IDTR {
     length: u16,
     base: u32
@@ -127,8 +130,10 @@ static mut idt : IDT = IDT {entries: [IDTEntry {offset_lo: 0, selector: 0, zero:
 fn lidt() {
     unsafe {
         let idt_addr:*mut IDT = &mut idt;
-        let idtr = IDTR {length: 256*8-1, base: (idt_addr) as u32};
-        asm!("lidt ($0)"::"{ax}"(&idtr))
+        let mut idtr = IDTR {length: 256*8-1, base: idt_addr as u32};
+        let idtr_addr:*mut IDTR = &mut idtr;
+        asm!("lidt ($0)"::"{eax}"(idtr_addr as u32));
+        //asm!("hlt");
     }
 }
 
@@ -147,12 +152,13 @@ fn init_int_49() {
             type_attr: 0x8e,
             offset_hi: (fnptr_addr >> 16) as u16
         };
+        asm!("lidt ($0)"::"{eax}"(&idt.entries[49]));
+        //asm!("hlt");
     }
 }
 
 extern {
     fn asm_int_49();
-    fn asm_load_handler(foo: u32,i:u32);
 }
 
 fn int_49() {
@@ -161,21 +167,13 @@ fn int_49() {
     }
 }
 
-fn load_handler(handler:unsafe extern fn()) {
-    unsafe {
-        let foo:*mut IDT = &mut idt;
-        asm_load_handler(handler as u32, foo as u32);
-    }
-}
-
 #[no_mangle]
 #[no_stack_check]
 pub fn main() {
     clear_screen(Color::LightRed);
     print_string("Hello world");
-    //lidt();
-    //init_int_49();
-    load_handler(asm_int_handler);
+    init_int_49();
+    lidt();
     int_49();
     print_string("End world");
 }
@@ -183,9 +181,5 @@ pub fn main() {
 #[no_mangle]
 pub extern fn int_handler() {
     clear_screen(Color::Blue);
-}
-
-fn int_handler2() {
-    clear_screen(Color::Green);
 }
 
