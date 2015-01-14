@@ -9,7 +9,7 @@ SECTIONS {
     . = 0x7e00;
 
     .main : {
-        main.o(*)
+        main.o(.text.main)
     } >ram
 
     .lib : {

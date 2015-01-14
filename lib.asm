@@ -2,6 +2,7 @@ section .text
 global memset
 global asm_int_49
 global asm_int_handler
+global asm_load_handler
 
 extern int_handler
 
@@ -36,15 +37,38 @@ memset_loop:
     ret
 
 asm_int_49:
-    ;call [esp+4]
     int 49
     ret
 
 asm_int_handler:
     pushad
-    mov ax, 0
-    mov gs, ax
-    mov dword [gs:0xB8000],'( : '
+    call int_handler
     popad
-    hlt
+    iret
+
+asm_load_handler:
+    push ebp
+    mov ebp,esp
+    pushad
+
+    mov eax,[ebp+8] ; handler
+    mov ebx,[ebp+12] ; idt
+    mov ecx, idtr
+    add ecx,2
+    mov [ecx],ebx
+    lidt [idtr]
+    mov [ebx+49*8],ax
+    mov word [ebx+49*8+2],0x08 ; Offset of code segment in GT
+    mov word [ebx+49*8+4],0x8E00
+    shr eax,16
+    mov [ebx+49*8+6],ax
+
+    popad
+    mov esp, ebp
+    pop ebp
+
     ret
+
+idtr:
+    dw (50*8)-1
+    dd 0

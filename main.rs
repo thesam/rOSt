@@ -8,11 +8,9 @@ extern crate core;
 
 use core::iter::Iterator;
 use core::str::StrExt;
-use core::str;
 use core::option::Option;
 
 use core::marker::Copy;
-use core::slice::AsSlice;
 
 impl Copy for Color {}
 
@@ -144,7 +142,7 @@ fn init_int_49() {
         let fnptr_addr = fnptr as u32;
         idt.entries[49] = IDTEntry {
             offset_lo: fnptr_addr as u16,
-            selector: 0,
+            selector: 0x08,
             zero: 0,
             type_attr: 0x8e,
             offset_hi: (fnptr_addr >> 16) as u16
@@ -153,12 +151,20 @@ fn init_int_49() {
 }
 
 extern {
-    fn asm_int_49(foo : u32);
+    fn asm_int_49();
+    fn asm_load_handler(foo: u32,i:u32);
 }
 
-fn int_49(handler:unsafe extern fn()) {
+fn int_49() {
     unsafe {
-        asm_int_49(handler as u32);
+        asm_int_49();
+    }
+}
+
+fn load_handler(handler:unsafe extern fn()) {
+    unsafe {
+        let foo:*mut IDT = &mut idt;
+        asm_load_handler(handler as u32, foo as u32);
     }
 }
 
@@ -167,13 +173,15 @@ fn int_49(handler:unsafe extern fn()) {
 pub fn main() {
     clear_screen(Color::LightRed);
     print_string("Hello world");
-//    lidt();
-//    init_int_49();
-//    int_49(asm_int_handler);
-    print_int(0xDEADBEEF);
+    //lidt();
+    //init_int_49();
+    load_handler(asm_int_handler);
+    int_49();
+    print_string("End world");
 }
 
-fn int_handler() {
+#[no_mangle]
+pub extern fn int_handler() {
     clear_screen(Color::Blue);
 }
 
@@ -181,37 +189,3 @@ fn int_handler2() {
     clear_screen(Color::Green);
 }
 
-fn print_int(x:u32) {
-    let mut left = x;
-    let mut out:[u8;8] = [10;8];
-    let mut pos = 0; 
-
-    loop {
-        let rem = (left % 16) as u8;
-        out[pos] = rem;
-        pos = pos + 1;
-        if (left < 16) {
-            break;
-        } else {
-            left = left / 16;
-        }
-    }
-
-
-    let mut i = 0;
-    loop {
-        if (i == 8) {
-            break
-        }
-        unsafe {
-            let val = out[8-1-i];
-            if (val < 10) {
-                *((0xb8000 + i*2) as *mut u8) = val + 48;
-            } else {
-                *((0xb8000 + i*2) as *mut u8) = (val - 10) + 65;
-            }
-            *((0xb8000 + i*2 + 1) as *mut u8) = 0x0f;
-        }            
-        i = i + 1;   
-    }
-}
