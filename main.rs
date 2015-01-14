@@ -141,19 +141,19 @@ extern {
     fn asm_int_handler();
 }
 
-fn init_int_49() {
+fn init_interrupt_handlers() {
     unsafe {
         let fnptr:unsafe extern fn() = asm_int_handler;
         let fnptr_addr = fnptr as u32;
-        idt.entries[49] = IDTEntry {
+        idt.entries[0x21] = IDTEntry {
             offset_lo: fnptr_addr as u16,
             selector: 0x08,
             zero: 0,
             type_attr: 0x8e,
             offset_hi: (fnptr_addr >> 16) as u16
         };
-        asm!("lidt ($0)"::"{eax}"(&idt.entries[49]));
-        //asm!("hlt");
+        lidt();
+        asm!("sti");
     }
 }
 
@@ -167,14 +167,38 @@ fn int_49() {
     }
 }
 
+fn init_pic() {
+	outb(0x20 , 0x11);
+	outb(0xA0 , 0x11);
+
+    // Remap interrupts
+	outb(0x21 , 0x20);
+	outb(0xA1 , 0x28);
+
+	outb(0x21 , 0x00);  
+	outb(0xA1 , 0x00);  
+
+	outb(0x21 , 0x01);
+	outb(0xA1 , 0x01);
+
+	// Disable all interrupts
+	outb(0x21 , 0xff);
+	outb(0xA1 , 0xff);
+}
+
+fn enable_keyboard_interrupt() {
+    outb(0x21 , 0b11111101);
+}
+
 #[no_mangle]
 #[no_stack_check]
 pub fn main() {
     clear_screen(Color::LightRed);
     print_string("Hello world");
-    init_int_49();
-    lidt();
-    int_49();
+    init_pic();
+    enable_keyboard_interrupt();
+    init_interrupt_handlers();
+    //int_49();
     print_string("End world");
 }
 
