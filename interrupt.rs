@@ -98,5 +98,7 @@ pub extern fn int_handler() {
     unsafe {
         keyboard_handler();
     }
+    // Ack interrupt to be able to get the next one;
+    //asm::outb(0x20,0x20);
 }
 

@@ -17,7 +17,7 @@ mod console;
 mod asm;
 mod interrupt;
 
-static console: console::Console = console::Console {position:0}; 
+static console: console::Console = console::Console {position: 0}; 
 
 #[no_mangle]
 #[no_stack_check]
@@ -29,7 +29,7 @@ pub fn main() {
 }
 
 fn on_keyboard_interrupt() {
-    console.clear_screen(Color::Blue);
+    console.print_string("x");
 }
 
 
