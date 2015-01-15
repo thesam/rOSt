@@ -14,6 +14,7 @@ boot:
     mov ah, 2       ; read
     mov al, 24      ; 24 sectors (12 KiB)
     mov ch, 0       ; cylinder & 0xff
+    ;  Sector 1 is the first sector and contains this bootloader code (512 bytes). The Rust code starts at sector 2.
     mov cl, 2       ; sector | ((cylinder >> 2) & 0xc0)
     mov dh, 0       ; head
     mov bx, 0x7e00  ; read buffer
