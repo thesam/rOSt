@@ -1,6 +1,7 @@
 #![no_std]
 
 #![feature(asm)]
+#![feature(lang_items)]
 
 extern crate core;
 
@@ -32,5 +33,9 @@ fn on_keyboard_interrupt() {
     console.print_string("x");
 }
 
+//TODO: Stubs for now
+#[lang = "stack_exhausted"] extern fn stack_exhausted() {}
+#[lang = "eh_personality"] extern fn eh_personality() {}
+#[lang = "panic_fmt"] fn panic_fmt() -> ! { loop {} }
 
 
