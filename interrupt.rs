@@ -25,6 +25,21 @@ struct IDTR {
 
 static mut idt : IDT = IDT {entries: [IDTEntry {offset_lo: 0, selector: 0, zero: 0, type_attr: 0, offset_hi: 0};256]};
 
+static mut keyboard_handler:fn() = do_nothing;
+
+fn do_nothing() {
+}
+
+pub fn register_handler(handler:fn()) {
+    unsafe {
+        keyboard_handler = handler;
+    }
+
+    init_pic();
+    enable_keyboard_interrupt();
+    init_interrupt_handlers();
+}
+
 fn lidt() {
     unsafe {
         let idt_addr:*mut IDT = &mut idt;
@@ -39,7 +54,7 @@ extern {
     fn asm_int_handler();
 }
 
-pub fn init_interrupt_handlers() {
+fn init_interrupt_handlers() {
     unsafe {
         let fnptr:unsafe extern fn() = asm_int_handler;
         let fnptr_addr = fnptr as u32;
@@ -55,7 +70,7 @@ pub fn init_interrupt_handlers() {
     }
 }
 
-pub fn init_pic() {
+fn init_pic() {
 	asm::outb(0x20 , 0x11);
 	asm::outb(0xA0 , 0x11);
 
@@ -74,6 +89,14 @@ pub fn init_pic() {
 	asm::outb(0xA1 , 0xff);
 }
 
-pub fn enable_keyboard_interrupt() {
+fn enable_keyboard_interrupt() {
     asm::outb(0x21 , 0b11111101);
 }
+
+#[no_mangle]
+pub extern fn int_handler() {
+    unsafe {
+        keyboard_handler();
+    }
+}
+

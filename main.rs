@@ -10,6 +10,9 @@ use core::marker::Copy;
 use console::Console;
 use console::Color;
 
+// Must be re-exported to be called from assembly
+pub use interrupt::int_handler;
+
 mod console;
 mod asm;
 mod interrupt;
@@ -21,14 +24,13 @@ static console: console::Console = console::Console {position:0};
 pub fn main() { 
     console.clear_screen(Color::LightRed);
     console.print_string("Hello world");
-    interrupt::init_pic();
-    interrupt::enable_keyboard_interrupt();
-    interrupt::init_interrupt_handlers();
+    interrupt::register_handler(on_keyboard_interrupt);
     console.print_string("End world");
 }
 
-#[no_mangle]
-pub extern fn int_handler() {
+fn on_keyboard_interrupt() {
     console.clear_screen(Color::Blue);
 }
+
+
 
