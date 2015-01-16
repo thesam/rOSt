@@ -94,11 +94,12 @@ fn enable_keyboard_interrupt() {
 }
 
 #[no_mangle]
+#[no_stack_check]
 pub extern fn int_handler() {
     unsafe {
         keyboard_handler();
     }
-    // Ack interrupt to be able to get the next one;
-    //asm::outb(0x20,0x20);
+    // Ack interrupt to be able to get the next one
+    asm::outb(0x20,0x20);
 }
 

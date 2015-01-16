@@ -8,7 +8,7 @@ use core::str::StrExt;
 use asm;
 
 pub struct Console {
-    pub position:u16
+    pub position:u32
 }
 
 #[allow(dead_code)]
@@ -69,29 +69,28 @@ impl Console {
         self.move_cursor(0);
     }
 
-    pub fn print_string(&self,string: &str) {
+    pub fn print_string(&mut self,string: &str) {
         let mut bytes = string.bytes();
-        let mut count = 0;
         loop {
             match bytes.next() {
                 Option::Some(x) => {
                     unsafe {
-                        *((0xb8000 + count) as *mut u8) = x;
-                        *((0xb8000 + count + 1) as *mut u8) = 0x0f;
+                        *((0xb8000 + self.position*2) as *mut u8) = x;
+                        *((0xb8000 + self.position*2 + 1) as *mut u8) = 0x0f;
                     }
-                    count = count + 2;
+                    self.position += 1;
                 },
                 Option::None =>{break}
             }
         }
-        self.step_cursor(string.len() as u16);
+        self.update_cursor();
     }
 
-    fn step_cursor(&self, len: u16) {
-        self.move_cursor(self.position + len);
+    fn update_cursor(&self) {
+        self.move_cursor(self.position);
     }
 
-    fn move_cursor(&self,pos: u16) {
+    fn move_cursor(&self,pos: u32) {
         asm::outb(0x3D4,15);
         asm::outb(0x3D5,(pos & 0xff) as u8);
         asm::outb(0x3D4,14);
