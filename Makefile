@@ -9,10 +9,10 @@ all: floppy.img
 
 .PHONY: clean run
 
-.rs.o:
+.rs.o: *.rs
 	$(RUSTC) -O --target i686-unknown-linux-gnu --crate-type lib -o $@ --emit obj -C relocation-model=static $<
 
-.asm.o:
+.asm.o: *.asm
 	$(NASM) -f elf32 -o $@ $<
 
 floppy.img: loader.bin main.bin
