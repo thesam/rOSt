@@ -30,7 +30,8 @@ pub fn main() {
 
 fn on_keyboard_interrupt() {
     unsafe {
-        console.print_string("x");
+        let scancode = asm::inb(0x60);
+        console.print_char(scancode);
     }
 }
 

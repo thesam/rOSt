@@ -76,16 +76,20 @@ impl Console {
         loop {
             match bytes.next() {
                 Option::Some(x) => {
-                    unsafe {
-                        *((0xb8000 + self.position*2) as *mut u8) = x;
-                        *((0xb8000 + self.position*2 + 1) as *mut u8) = 0x0f;
-                    }
-                    self.position += 1;
+                    self.print_char(x);
                 },
                 Option::None =>{break}
             }
         }
         self.update_cursor();
+    }
+
+    pub fn print_char(&mut self,c: u8) {
+        unsafe {
+            *((0xb8000 + self.position*2) as *mut u8) = c;
+            *((0xb8000 + self.position*2 + 1) as *mut u8) = 0x0f;
+        }
+        self.position += 1;
     }
 
     fn update_cursor(&self) {
