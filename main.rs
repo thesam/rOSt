@@ -2,11 +2,9 @@
 
 #![feature(asm)]
 
+#[allow(unstable)]
 extern crate core;
 
-use core::iter::Iterator;
-use core::str::StrExt;
-use core::marker::Copy;
 use console::Console;
 use console::Color;
 

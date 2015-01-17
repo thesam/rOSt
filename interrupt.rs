@@ -2,6 +2,7 @@ use core::marker::Copy;
 
 use asm;
 
+#[allow(dead_code)]
 struct IDTEntry {
     offset_lo: u16,
     selector: u16,
@@ -16,6 +17,7 @@ struct IDT {
     entries: [IDTEntry; 256]
 }
 
+#[allow(dead_code)]
 // Must be packed for lidt to read it correctly.
 #[repr(packed)]
 struct IDTR {

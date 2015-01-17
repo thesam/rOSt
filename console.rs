@@ -1,3 +1,4 @@
+#[allow(unstable)]
 extern crate core;
 
 use core::marker::Copy;
@@ -69,6 +70,7 @@ impl Console {
         self.move_cursor(0);
     }
 
+    #[allow(unstable)]
     pub fn print_string(&mut self,string: &str) {
         let mut bytes = string.bytes();
         loop {
