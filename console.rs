@@ -81,7 +81,6 @@ impl Console {
                 Option::None =>{break}
             }
         }
-        self.update_cursor();
     }
 
     pub fn print_char(&mut self,c: u8) {
@@ -90,6 +89,7 @@ impl Console {
             *((0xb8000 + self.position*2 + 1) as *mut u8) = 0x0f;
         }
         self.position += 1;
+        self.update_cursor();
     }
 
     fn update_cursor(&self) {

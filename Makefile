@@ -9,10 +9,10 @@ all: floppy.img
 
 .PHONY: clean run
 
-.rs.o: *.rs
-	$(RUSTC) -O --target i686-unknown-linux-gnu --crate-type lib -o $@ --emit obj -C relocation-model=static $<
+main.o: *.rs
+	$(RUSTC) -O --target i686-unknown-linux-gnu --crate-type lib -o $@ --emit obj -C relocation-model=static main.rs
 
-.asm.o: *.asm
+lib.o: lib.asm
 	$(NASM) -f elf32 -o $@ $<
 
 floppy.img: loader.bin main.bin
@@ -23,7 +23,7 @@ loader.bin: loader.asm
 	$(NASM) -o $@ -f bin $<
 
 main.bin: linker.ld main.o lib.o
-	$(LD) -m elf_i386 -o $@ -T $^
+	$(LD) -m elf_i386 -o $@ -T $<
 
 run: floppy.img
 	$(QEMU) -s -fda $<
