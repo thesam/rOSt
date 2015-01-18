@@ -28,11 +28,21 @@ pub fn main() {
     }
 }
 
+#[no_stack_check]
 fn on_keyboard_interrupt() {
-    unsafe {
-        let scancode = asm::inb(0x60);
-        console.print_char(scancode);
+    let scancode = asm::inb(0x60);
+    // Keydown
+    if (scancode & 0b10000000 == 0) {
+        let c:u8 = scancode_to_char(scancode);
+        unsafe {
+            console.print_char(c);
+        }
     }
+}
+
+fn scancode_to_char(scancode: u8) -> u8 {
+    let translation_table:[u8;256] = ['?' as u8;256];
+    return translation_table[scancode as usize];
 }
 
 

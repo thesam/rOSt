@@ -60,6 +60,7 @@ fn init_interrupt_handlers() {
     unsafe {
         let fnptr:unsafe extern fn() = asm_int_handler;
         let fnptr_addr = fnptr as u32;
+        //TODO: 0x21 = Remapped interrupt 1 = Keyboard interrupt
         idt.entries[0x21] = IDTEntry {
             offset_lo: fnptr_addr as u16,
             selector: 0x08,
