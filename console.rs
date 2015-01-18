@@ -71,8 +71,9 @@ impl Console {
     }
 
     #[allow(unstable)]
+    #[no_stack_check]
     pub fn print_string(&mut self,string: &str) {
-        let mut bytes = string.bytes();
+        let mut bytes = string.chars();
         loop {
             match bytes.next() {
                 Option::Some(x) => {
@@ -83,9 +84,9 @@ impl Console {
         }
     }
 
-    pub fn print_char(&mut self,c: u8) {
+    pub fn print_char(&mut self,c: char) {
         unsafe {
-            *((0xb8000 + self.position*2) as *mut u8) = c;
+            *((0xb8000 + self.position*2) as *mut u8) = c as u8;
             *((0xb8000 + self.position*2 + 1) as *mut u8) = 0x0f;
         }
         self.position += 1;

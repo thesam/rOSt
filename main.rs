@@ -33,16 +33,16 @@ fn on_keyboard_interrupt() {
     let scancode = asm::inb(0x60);
     // Keydown
     if (scancode & 0b10000000 == 0) {
-        let c:u8 = scancode_to_char(scancode);
+        let c = scancode_to_char(scancode);
         unsafe {
             console.print_char(c);
         }
     }
 }
 
-fn scancode_to_char(scancode: u8) -> u8 {
-    let translation_table:[u8;256] = ['?' as u8;256];
-    return translation_table[scancode as usize];
+fn scancode_to_char(scancode: u8) -> char {
+    let mut charmap:[char;256] = ['?';256];
+    return charmap[scancode as usize];
 }
 
 
