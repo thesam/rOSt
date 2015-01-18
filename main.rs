@@ -42,6 +42,17 @@ fn on_keyboard_interrupt() {
 
 fn scancode_to_char(scancode: u8) -> char {
     let mut charmap:[char;256] = ['?';256];
+    charmap[0x2] = '1';
+    charmap[0x3] = '2';
+    charmap[0x4] = '3';
+    charmap[0x5] = '4';
+    charmap[0x6] = '5';
+    charmap[0x7] = '6';
+    charmap[0x8] = '7';
+    charmap[0x9] = '8';
+    charmap[0xA] = '9';
+    charmap[0xB] = '0';
+
     return charmap[scancode as usize];
 }
 
