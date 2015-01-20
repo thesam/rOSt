@@ -93,6 +93,33 @@ impl Console {
         self.update_cursor();
     }
 
+    pub fn print_int(&mut self, number: u32) {
+        let mut length = 0;
+        let mut output:[u8;64] = [0;64];
+        let mut left = number;
+        loop {
+            //TODO: Must be a better way to write to vector without bounds checking
+            let output_addr:*const u8 = &output[0];
+            let output_addr_u32:u32=output_addr as u32;
+            unsafe {
+                *((output_addr_u32 + length) as *mut u8) = (left % 10) as u8;
+            }
+            length += 1;
+            left = left / 10;
+            if (left == 0) {
+                break;                
+            }
+        }
+        loop {
+            let c:char = (output[(length-1) as usize] + 0x30) as char;
+            self.print_char(c);
+            length -= 1;
+            if (length == 0) {
+                break;
+            }
+        }
+    }
+
     fn update_cursor(&self) {
         self.move_cursor(self.position);
     }

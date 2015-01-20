@@ -1,6 +1,7 @@
 #![no_std]
 
 #![feature(asm)]
+#![feature(lang_items)]
 
 #[allow(unstable)]
 extern crate core;
@@ -25,6 +26,8 @@ pub fn main() {
         console.print_string("Hello world");
         interrupt::register_handler(on_keyboard_interrupt);
         console.print_string("End world");
+        console.print_char('A');
+        console.print_int(1234567890);
     }
 }
 
@@ -56,5 +59,9 @@ fn scancode_to_char(scancode: u8) -> char {
     return charmap[scancode as usize];
 }
 
+// Stubs for functions needed to build as static lib.
+#[lang = "stack_exhausted"] extern fn stack_exhausted() {}
+#[lang = "eh_personality"] extern fn eh_personality() {}
+#[lang = "panic_fmt"] fn panic_fmt() -> ! { loop{} }
 
 
