@@ -55,6 +55,7 @@ fn scancode_to_char(scancode: u8) -> char {
     charmap[0x9] = '8';
     charmap[0xA] = '9';
     charmap[0xB] = '0';
+    charmap[0x1C] = '\n';
 
     return charmap[scancode as usize];
 }

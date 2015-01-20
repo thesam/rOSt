@@ -85,11 +85,17 @@ impl Console {
     }
 
     pub fn print_char(&mut self,c: char) {
-        unsafe {
-            *((0xb8000 + self.position*2) as *mut u8) = c as u8;
-            *((0xb8000 + self.position*2 + 1) as *mut u8) = 0x0f;
+        if (c == '\n') {
+            self.position += 80;
+            let col = self.position % 80;
+            self.position -= col;
+        } else {
+            unsafe {
+                *((0xb8000 + self.position*2) as *mut u8) = c as u8;
+                *((0xb8000 + self.position*2 + 1) as *mut u8) = 0x0f;
+            }
+            self.position += 1;
         }
-        self.position += 1;
         self.update_cursor();
     }
 
