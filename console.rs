@@ -7,9 +7,10 @@ use core::iter::Iterator;
 use core::str::StrExt;
 
 use asm;
+use interrupt;
 
 pub struct Console {
-    pub position:u32
+    position:u32
 }
 
 #[allow(dead_code)]
@@ -54,7 +55,16 @@ fn range(lo: isize, hi: isize) -> IntRange {
 
 impl Copy for Color {}
 
+static mut console: Console = Console {position: 0}; 
+
 impl Console {
+    pub fn init() -> &'static mut Console {
+        interrupt::register_handler(on_keyboard_interrupt);
+        unsafe {
+            return &mut console;
+        }
+    }
+
     pub fn clear_screen(&self,background: Color) {
         let mut r = range(0, 80 * 25);
         loop {
@@ -85,7 +95,7 @@ impl Console {
     }
 
     pub fn print_char(&mut self,c: char) {
-        if (c == '\n') {
+        if c == '\n' {
             self.position += 80;
             let col = self.position % 80;
             self.position -= col;
@@ -101,7 +111,7 @@ impl Console {
 
     pub fn print_int(&mut self, number: u32) {
         let mut length = 0;
-        let mut output:[u8;64] = [0;64];
+        let output:[u8;64] = [0;64];
         let mut left = number;
         loop {
             //TODO: Must be a better way to write to vector without bounds checking
@@ -112,7 +122,7 @@ impl Console {
             }
             length += 1;
             left = left / 10;
-            if (left == 0) {
+            if left == 0 {
                 break;                
             }
         }
@@ -120,7 +130,7 @@ impl Console {
             let c:char = (output[(length-1) as usize] + 0x30) as char;
             self.print_char(c);
             length -= 1;
-            if (length == 0) {
+            if length == 0 {
                 break;
             }
         }
@@ -136,4 +146,33 @@ impl Console {
         asm::outb(0x3D4,14);
         asm::outb(0x3D5,((pos >> 8) & 0xff) as u8);
     }
+}
+
+#[no_stack_check]
+fn on_keyboard_interrupt() {
+    let scancode = asm::inb(0x60);
+    // Keydown
+    if scancode & 0b10000000 == 0 {
+        let c = scancode_to_char(scancode);
+        unsafe {
+            console.print_char(c);
+        }
+    }
+}
+
+fn scancode_to_char(scancode: u8) -> char {
+    let mut charmap:[char;256] = ['?';256];
+    charmap[0x2] = '1';
+    charmap[0x3] = '2';
+    charmap[0x4] = '3';
+    charmap[0x5] = '4';
+    charmap[0x6] = '5';
+    charmap[0x7] = '6';
+    charmap[0x8] = '7';
+    charmap[0x9] = '8';
+    charmap[0xA] = '9';
+    charmap[0xB] = '0';
+    charmap[0x1C] = '\n';
+
+    return charmap[scancode as usize];
 }
