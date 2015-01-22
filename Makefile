@@ -32,4 +32,4 @@ debug: floppy.img
 	$(QEMU) -s -S -fda $<
 
 clean:
-	rm -f *.bin *.o *.img
+	rm -f *.bin *.o *.img *.a
