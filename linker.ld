@@ -14,6 +14,7 @@ SECTIONS {
 
     .lib : {
         lib.o(*)
+        libcore.rlib(.text)
     } >ram
 
     /DISCARD/ : {
