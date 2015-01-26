@@ -9,7 +9,7 @@ boot:
     mov es, ax
     mov ss, ax
     ; load rust code into 0x7e00 so we can jump to it later
-    mov bx, 0x7c00  ; read buffer
+    mov bx, 0x7e00  ; read buffer
 read_loop:
     mov ah, 2       ; read
     mov al, 1      ; 1 sector at a time (512B)
@@ -66,9 +66,11 @@ cylinder:
 head:
     db 0 
 sector:
-    db 1
+    ; Start at sector 2, since bootloader is already loaded from sector 1
+    db 2
 sector_count:
-    db 24 ; 400 sectors = 200KB
+    ; Want to read 399 sectors after bootloader => 200KB including bootloader
+    db 65 ; TODO: Crashes if bigger than 65, why?? BX overflows!!
 
 protected_mode:
     use32
