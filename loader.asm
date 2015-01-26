@@ -8,22 +8,39 @@ boot:
     mov ds, ax
     mov es, ax
     mov ss, ax
-    ; initialize stack
-    mov sp, 0x7bfe
     ; load rust code into 0x7e00 so we can jump to it later
+    mov bx, 0x7c00  ; read buffer
+read_loop:
     mov ah, 2       ; read
-    mov al, 24      ; 24 sectors (12 KiB)
-    mov ch, 0       ; cylinder & 0xff
+    mov al, 1      ; 1 sector at a time (512B)
+    mov ch, [cylinder]       ; cylinder & 0xff
     ;  Sector 1 is the first sector and contains this bootloader code (512 bytes). The Rust code starts at sector 2.
-    mov cl, 2       ; sector | ((cylinder >> 2) & 0xc0)
-    mov dh, 0       ; head
-    mov bx, 0x7e00  ; read buffer
+    mov cl, [sector]       ; sector | ((cylinder >> 2) & 0xc0)
+    mov dh, [head]       ; head
     int 0x13
     jc error
+    add bx, 0x200 ; 512B read
+
+    inc byte [sector]
+    cmp byte [sector], 19 ; 18+1
+    jne check_sector_count
+    mov byte [sector], 1
+    inc byte [head] ; increase head
+    cmp byte [head], 2 ; 1+1
+    jne check_sector_count
+    mov byte [head], 0
+    inc byte [cylinder]
+check_sector_count:    
+    dec byte [sector_count]
+    cmp byte [sector_count], 0
+    jne read_loop
+
     ; load protected mode GDT and a null IDT (we don't need interrupts)
     cli
     lgdt [gdtr]
     lidt [idtr]
+    ; initialize stack
+    mov sp, 0x7bfe
     ; set protected mode bit of cr0
     mov eax, cr0
     or eax, 1
@@ -42,7 +59,16 @@ error:
     jmp .loop
 .done:
     jmp $
-    .msg db "could not read disk", 0
+    .msg db "rOSt: could not read disk", 0
+
+cylinder:
+    db 0
+head:
+    db 0 
+sector:
+    db 1
+sector_count:
+    db 24 ; 400 sectors = 200KB
 
 protected_mode:
     use32
