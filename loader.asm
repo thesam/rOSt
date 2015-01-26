@@ -20,7 +20,11 @@ read_loop:
     int 0x13
     jc error
     add bx, 0x200 ; 512B read
-
+    jnc inc_sector
+    mov ax, es
+    add ax, 0x1000
+    mov es, ax ; bx overflow, compensate with ES (0x1000 => 0x10000)
+inc_sector:
     inc byte [sector]
     cmp byte [sector], 19 ; 18+1
     jne check_sector_count
@@ -70,7 +74,7 @@ sector:
     db 2
 sector_count:
     ; Want to read 399 sectors after bootloader => 200KB including bootloader
-    db 65 ; TODO: Crashes if bigger than 65, why?? BX overflows!!
+    db 399
 
 protected_mode:
     use32
