@@ -35,8 +35,8 @@ inc_sector:
     mov byte [head], 0
     inc byte [cylinder]
 check_sector_count:    
-    dec byte [sector_count]
-    cmp byte [sector_count], 0
+    dec word [sector_count]
+    cmp word [sector_count], 0
     jne read_loop
 
     ; load protected mode GDT and a null IDT (we don't need interrupts)
@@ -74,7 +74,7 @@ sector:
     db 2
 sector_count:
     ; Want to read 399 sectors after bootloader => 200KB including bootloader
-    db 399
+    dw 399
 
 protected_mode:
     use32

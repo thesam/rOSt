@@ -29,9 +29,9 @@ pub fn main() {
     console.print_string("Hello world");
     console.print_string("End world");
     console.print_char('A');
-    console.print_int(1234567890);
-    let boxed = box 5;
-    console.print_int(*boxed);
+    //console.print_int(1234567890);
+    //let boxed = box 5;
+    //console.print_int(*boxed);
 }
 
 // Stubs for functions needed to build as static lib.
