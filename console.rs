@@ -5,6 +5,7 @@ use core::marker::Copy;
 use core::option::Option;
 use core::iter::Iterator;
 use core::str::StrExt;
+use core::iter::range;
 
 use asm;
 use interrupt;
@@ -31,26 +32,6 @@ pub enum Color {
     LightPink  = 13,
     Yellow     = 14,
     White      = 15,
-}
-
-struct IntRange {
-    cur: isize,
-    max: isize
-}
-
-impl IntRange {
-    fn next(&mut self) -> Option<isize> {
-        if self.cur < self.max {
-            self.cur += 1;
-            Option::Some(self.cur - 1)
-        } else {
-            Option::None
-        }
-    }
-}
-
-fn range(lo: isize, hi: isize) -> IntRange {
-    IntRange { cur: lo, max: hi }
 }
 
 impl Copy for Color {}
