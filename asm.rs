@@ -8,6 +8,16 @@ pub fn outb(port:u16, value:u8) {
     }
 }
 
+pub fn out32(port:u16, value:u32) {
+    unsafe {
+        asm!(
+        "out $0,$1"
+        :
+        : "{eax}"(value), "{dx}"(port)
+        )
+    }
+}
+
 pub fn inb(port:u16) -> u8 {
     let mut value:u8;
     unsafe {

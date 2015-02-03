@@ -1,7 +1,7 @@
 LD=ld
 RUSTC=rustc
 NASM=nasm
-QEMU=qemu-system-i386
+QEMU=qemu-system-i386 -net nic,model=rtl8139
 
 all: floppy.img
 
