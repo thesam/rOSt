@@ -1,4 +1,4 @@
-pub fn outb(port:u16, value:u8) {
+pub fn out8(port:u16, value:u8) {
     unsafe {
         asm!(
         "out $0,$1"
@@ -18,7 +18,7 @@ pub fn out32(port:u16, value:u32) {
     }
 }
 
-pub fn inb(port:u16) -> u8 {
+pub fn in8(port:u16) -> u8 {
     let mut value:u8;
     unsafe {
         //TODO: Figure out the input/output constraints, is this correct?

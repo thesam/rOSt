@@ -74,26 +74,26 @@ fn init_interrupt_handlers() {
 }
 
 fn init_pic() {
-	asm::outb(0x20 , 0x11);
-	asm::outb(0xA0 , 0x11);
+	asm::out8(0x20 , 0x11);
+	asm::out8(0xA0 , 0x11);
 
     // Remap interrupts
-	asm::outb(0x21 , 0x20);
-	asm::outb(0xA1 , 0x28);
+	asm::out8(0x21 , 0x20);
+	asm::out8(0xA1 , 0x28);
 
-	asm::outb(0x21 , 0x00);  
-	asm::outb(0xA1 , 0x00);  
+	asm::out8(0x21 , 0x00);  
+	asm::out8(0xA1 , 0x00);  
 
-	asm::outb(0x21 , 0x01);
-	asm::outb(0xA1 , 0x01);
+	asm::out8(0x21 , 0x01);
+	asm::out8(0xA1 , 0x01);
 
 	// Disable all interrupts
-	asm::outb(0x21 , 0xff);
-	asm::outb(0xA1 , 0xff);
+	asm::out8(0x21 , 0xff);
+	asm::out8(0xA1 , 0xff);
 }
 
 fn enable_keyboard_interrupt() {
-    asm::outb(0x21 , 0b11111101);
+    asm::out8(0x21 , 0b11111101);
 }
 
 #[no_mangle]
@@ -103,6 +103,6 @@ pub extern fn int_handler() {
         keyboard_handler();
     }
     // Ack interrupt to be able to get the next one
-    asm::outb(0x20,0x20);
+    asm::out8(0x20,0x20);
 }
 

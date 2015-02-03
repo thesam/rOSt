@@ -122,16 +122,16 @@ impl Console {
     }
 
     fn move_cursor(&self,pos: u32) {
-        asm::outb(0x3D4,15);
-        asm::outb(0x3D5,(pos & 0xff) as u8);
-        asm::outb(0x3D4,14);
-        asm::outb(0x3D5,((pos >> 8) & 0xff) as u8);
+        asm::out8(0x3D4,15);
+        asm::out8(0x3D5,(pos & 0xff) as u8);
+        asm::out8(0x3D4,14);
+        asm::out8(0x3D5,((pos >> 8) & 0xff) as u8);
     }
 }
 
 #[no_stack_check]
 fn on_keyboard_interrupt() {
-    let scancode = asm::inb(0x60);
+    let scancode = asm::in8(0x60);
     // Keydown
     if scancode & 0b10000000 == 0 {
         let c = scancode_to_char(scancode);
