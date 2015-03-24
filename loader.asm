@@ -73,7 +73,7 @@ sector:
     ; Start at sector 2, since bootloader is already loaded from sector 1
     db 2
 sector_count:
-    ; Want to read 399 sectors after bootloader => 200KB including bootloader
+    ; Want to read 599 sectors after bootloader => 300KB including bootloader (see linker.ld)
     dw 399
 
 protected_mode:
