@@ -4,8 +4,9 @@
 #![feature(asm)]
 #![feature(lang_items)]
 #![feature(box_syntax)]
+#![feature(core)]
+#![feature(unique)]
 
-#[allow(unstable)]
 extern crate core;
 
 use console::Color;
@@ -18,7 +19,6 @@ mod asm;
 mod interrupt;
 
 use core::ptr::Unique;
-use core::iter::range;
 
 #[lang="owned_box"]
 pub struct Box<T>(Unique<T>);
@@ -42,10 +42,10 @@ pub fn main() {
     console.print_char('\n');
 
     console.print_string("Begin PCI Scan...\n");
-    for bus in range(0,255) {
-        for slot in range(0,31) {
+    for bus in 0..255 {
+        for slot in 0..31 {
             let vendor = pci_check_vendor(bus,slot); 
-            if (vendor != 0xFFFF) {
+            if vendor != 0xFFFF {
                 console.print_string("Device found: ");
                 console.print_int(bus as u32);
                 console.print_string("-");

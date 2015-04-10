@@ -1,11 +1,8 @@
-#[allow(unstable)]
 extern crate core;
 
-use core::marker::Copy;
 use core::option::Option;
 use core::iter::Iterator;
 use core::str::StrExt;
-use core::iter::range;
 
 use asm;
 use interrupt;
@@ -15,6 +12,7 @@ pub struct Console {
 }
 
 #[allow(dead_code)]
+#[derive(Copy, Clone)]
 pub enum Color {
     Black      = 0,
     Blue       = 1,
@@ -34,8 +32,6 @@ pub enum Color {
     White      = 15,
 }
 
-impl Copy for Color {}
-
 static mut console: Console = Console {position: 0}; 
 
 impl Console {
@@ -47,7 +43,7 @@ impl Console {
     }
 
     pub fn clear_screen(&self,background: Color) {
-        let mut r = range(0, 80 * 25);
+        let mut r = 0..80 * 25;
         loop {
             match r.next() {
                 Option::Some(x) => {
@@ -61,7 +57,6 @@ impl Console {
         self.move_cursor(0);
     }
 
-    #[allow(unstable)]
     #[no_stack_check]
     pub fn print_string(&mut self,string: &str) {
         let mut bytes = string.chars();

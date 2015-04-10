@@ -1,8 +1,7 @@
-use core::marker::Copy;
-
 use asm;
 
 #[allow(dead_code)]
+#[derive(Copy, Clone)]
 struct IDTEntry {
     offset_lo: u16,
     selector: u16,
@@ -10,8 +9,6 @@ struct IDTEntry {
     type_attr: u8,
     offset_hi: u16       
 }
-
-impl Copy for IDTEntry {}
 
 struct IDT {
     entries: [IDTEntry; 256]
