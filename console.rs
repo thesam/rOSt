@@ -70,11 +70,28 @@ impl Console {
         }
     }
 
+    #[no_stack_check]
     pub fn print_char(&mut self,c: char) {
         if c == '\n' {
-            self.position += 80;
             let col = self.position % 80;
             self.position -= col;
+            let current_row = self.current_row();
+            if (current_row < 24) {
+                self.position += 80;
+            } else {
+                // Scroll everything one row up.
+                let mut r = 0..80 * 25;
+                loop {
+                    match r.next() {
+                        Option::Some(x) => {
+                            unsafe {
+                                *((0xb8000 + x*2) as *mut u16) = *((0xb8000 + (x+80)*2) as *mut u16)
+                            }
+                        },
+                        Option::None =>{break}
+                    }
+                }
+            }
         } else {
             unsafe {
                 *((0xb8000 + self.position*2) as *mut u8) = c as u8;
@@ -85,6 +102,7 @@ impl Console {
         self.update_cursor();
     }
 
+    #[no_stack_check]
     pub fn print_int(&mut self, number: u32) {
         let mut length = 0;
         let output:[u8;64] = [0;64];
@@ -121,6 +139,10 @@ impl Console {
         asm::out8(0x3D5,(pos & 0xff) as u8);
         asm::out8(0x3D4,14);
         asm::out8(0x3D5,((pos >> 8) & 0xff) as u8);
+    }
+
+    fn current_row(&self) -> u32 {
+        return self.position / 80;
     }
 }
 
