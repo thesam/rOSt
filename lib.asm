@@ -110,4 +110,7 @@ global logf
 logf:
 global expf
 expf:
+global _Unwind_Resume
+_Unwind_Resume:
+; TODO: Panic
     jmp $
