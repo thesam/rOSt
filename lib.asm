@@ -112,5 +112,14 @@ global expf
 expf:
 global _Unwind_Resume
 _Unwind_Resume:
-; TODO: Panic
+global red_screen_of_death
+red_screen_of_death:
+    mov eax, 0xb8000
+    mov ecx, 80*25
+rsod_loop:
+    mov dword [eax], (4<<12)
+    inc eax
+    inc eax
+    dec ecx
+    jnz rsod_loop    
     jmp $

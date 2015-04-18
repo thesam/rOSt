@@ -17,6 +17,7 @@ pub use interrupt::int_handler;
 mod console;
 mod asm;
 mod interrupt;
+mod error;
 
 use core::ptr::Unique;
 
