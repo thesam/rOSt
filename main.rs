@@ -28,19 +28,9 @@ pub struct Box<T>(Unique<T>);
 #[no_stack_check]
 pub fn main() {
     let mut console = console::Console::init();
-    console.clear_screen(Color::LightRed);
+    console.clear_screen(Color::Black);
 
-    console.print_string("print_char: ");
-    console.print_char('A');
-    console.print_char('\n');
-
-    console.print_int(1234567890);
-    console.print_char('\n');
-
-    let boxed = box 5;
-    console.print_string("From box: ");
-    console.print_int(*boxed);
-    console.print_char('\n');
+    console.print_string("Welcome to rOSt.\n");
 
     console.print_string("Begin PCI Scan...\n");
     for bus in 0..255 {
@@ -58,8 +48,6 @@ pub fn main() {
             }
         }
     }
-
-    console.print_string("\n\nEnd of main()\n");
 }
 
 // Stubs for functions needed to build as static lib.
