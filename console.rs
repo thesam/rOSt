@@ -32,7 +32,7 @@ pub enum Color {
     White      = 15,
 }
 
-static mut console: Console = Console {position: 0}; 
+static mut console: Console = Console {position: 0};
 
 impl Console {
     pub fn init() -> &'static mut Console {
@@ -117,7 +117,7 @@ impl Console {
             length += 1;
             left = left / 10;
             if left == 0 {
-                break;                
+                break;
             }
         }
         loop {
