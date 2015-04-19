@@ -32,7 +32,7 @@ pub enum Color {
     White      = 15,
 }
 
-static mut console: Console = Console {position: 0}; 
+static mut console: Console = Console {position: 0};
 
 impl Console {
     pub fn init() -> &'static mut Console {
@@ -117,7 +117,7 @@ impl Console {
             length += 1;
             left = left / 10;
             if left == 0 {
-                break;                
+                break;
             }
         }
         loop {
@@ -170,7 +170,52 @@ fn scancode_to_char(scancode: u8) -> char {
     charmap[0x9] = '8';
     charmap[0xA] = '9';
     charmap[0xB] = '0';
+    charmap[0xC] = '-';
+    charmap[0xD] = '=';
+    charmap[0xE] = 'f';
+    charmap[0xF] = '\t';
+    charmap[0x10] = 'q';
+    charmap[0x11] = 'w';
+    charmap[0x12] = 'e';
+    charmap[0x13] = 'r';
+    charmap[0x14] = 't';
+    charmap[0x15] = 'y';
+    charmap[0x16] = 'u';
+    charmap[0x17] = 'i';
+    charmap[0x18] = 'o';
+    charmap[0x19] = 'p';
+    charmap[0x1a] = '[';
+    charmap[0x1B] = ']';
     charmap[0x1C] = '\n';
+    charmap[0x1D] = 'L'; // left control
+    charmap[0x1E] = 'a';
+    charmap[0x1F] = 's';
+    charmap[0x20] = 'd';
+    charmap[0x21] = 'f';
+    charmap[0x22] = 'g';
+    charmap[0x23] = 'h';
+    charmap[0x24] = 'j';
+    charmap[0x25] = 'k';
+    charmap[0x26] = 'l';
+    charmap[0x27] = ';';
+    charmap[0x28] = '\'';
+    charmap[0x29] = '`';
+    charmap[0x2a] = 'L'; // Left shift
+    charmap[0x2b] = '\\';
+    charmap[0x2c] = 'z';
+    charmap[0x2d] = 'x';
+    charmap[0x2e] = 'c';
+    charmap[0x2f] = 'v';
+    charmap[0x30] = 'b';
+    charmap[0x31] = 'n';
+    charmap[0x32] = 'm';
+    charmap[0x33] = ',';
+    charmap[0x34] = '.';
+    charmap[0x35] = '/';
+    charmap[0x36] = 'R'; // Right shift
+    charmap[0x37] = '*';
+    charmap[0x38] = 'L'; // Left Alt
+    charmap[0x39] = ' ';
 
     return charmap[scancode as usize];
 }
