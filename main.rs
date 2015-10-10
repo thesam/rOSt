@@ -6,8 +6,9 @@
 #![feature(box_syntax)]
 #![feature(core)]
 #![feature(unique)]
+#![feature(core_str_ext)]
 
-extern crate core;
+//extern crate core;
 
 use console::Color;
 
@@ -37,7 +38,7 @@ pub fn main() {
     console.print_string("Begin PCI Scan...\n");
     for bus in 0..255 {
         for slot in 0..31 {
-            let vendor = pci::check_vendor(bus,slot); 
+            let vendor = pci::check_vendor(bus,slot);
             if vendor != 0xFFFF {
                 console.print_string("Device found: ");
                 console.print_int(bus as u32);
@@ -56,4 +57,3 @@ pub fn main() {
 #[lang = "stack_exhausted"] extern fn stack_exhausted() {}
 #[lang = "eh_personality"] extern fn eh_personality() {}
 #[lang = "panic_fmt"] fn panic_fmt() -> ! { loop{} }
-

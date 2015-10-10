@@ -2,7 +2,7 @@ extern crate core;
 
 use core::option::Option;
 use core::iter::Iterator;
-use core::str::StrExt;
+//use core::str::StrExt;
 
 use asm;
 use interrupt;
