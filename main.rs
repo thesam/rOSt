@@ -51,6 +51,12 @@ pub fn main() {
             }
         }
     }
+
+    let foo = box 12345;
+    console.print_int(*foo);
+    let foo2 = box 0;
+    console.print_int(*foo2);
+    console.print_int(*foo);
 }
 
 // Stubs for functions needed to build as static lib.

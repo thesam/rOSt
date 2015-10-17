@@ -1,14 +1,19 @@
 // Dynamic allocation of memory
-static mut heap:u8 = 0;
+extern {
+    // Not really a function, but we need the address to the heap
+    fn heap_memory();
+}
+
+static mut heap_position:*mut u8 = heap_memory as *mut u8;
 
 #[lang="exchange_malloc"]
 unsafe fn allocate(size: usize, _align: usize) -> *mut u8 {
-    //TODO: Implement support more for than 1 byte :)
-    let p:*mut u8 = &mut heap;
+    let p:*mut u8 = heap_position;
+    //TODO: align?
+    heap_position = (heap_position as usize + size) as *mut u8;
     return p;
 }
 #[lang="exchange_free"]
 unsafe fn deallocate(ptr: *mut u8, _size: usize, _align: usize) {
     //TODO: Implement
 }
-

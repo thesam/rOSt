@@ -121,5 +121,9 @@ rsod_loop:
     inc eax
     inc eax
     dec ecx
-    jnz rsod_loop    
+    jnz rsod_loop
     jmp $
+
+global heap_memory
+
+heap_memory:
