@@ -3,12 +3,15 @@ extern crate core;
 use core::option::Option;
 use core::iter::Iterator;
 //use core::str::StrExt;
+use core::str::from_utf8;
 
 use asm;
 use interrupt;
 
 pub struct Console {
-    position:u32
+    position:u32,
+    inputbuffer:[u8;512],
+    inputready:bool
 }
 
 #[allow(dead_code)]
@@ -32,7 +35,7 @@ pub enum Color {
     White      = 15,
 }
 
-static mut console: Console = Console {position: 0};
+static mut console: Console = Console {position: 0, inputbuffer: [0;512], inputready: false};
 
 impl Console {
     pub fn init() -> &'static mut Console {
@@ -130,6 +133,14 @@ impl Console {
         }
     }
 
+    pub fn read_string(&mut self) -> &'static str {
+        while !self.inputready {
+            // Waiting for input
+        }
+        let buf = &self.inputbuffer;
+        return from_utf8(buf).unwrap();
+    }
+
     fn update_cursor(&self) {
         self.move_cursor(self.position);
     }
@@ -154,6 +165,9 @@ fn on_keyboard_interrupt() {
         let c = scancode_to_char(scancode);
         unsafe {
             console.print_char(c);
+            if c == '\n' {
+
+            }
         }
     }
 }
