@@ -57,6 +57,10 @@ pub fn main() {
     let foo2 = box 0;
     console.print_int(*foo2);
     console.print_int(*foo);
+
+    let foo = console.read_string();
+    console.print_string("You wrote: ");
+    console.print_string(foo);
 }
 
 // Stubs for functions needed to build as static lib.
