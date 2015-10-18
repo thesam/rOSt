@@ -43,3 +43,9 @@ pub fn in32(port:u16) -> u32 {
     }
     return value;
 }
+
+pub fn nop() {
+    unsafe {
+        asm!("nop")
+    }
+}

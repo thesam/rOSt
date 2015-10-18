@@ -10,7 +10,8 @@ use interrupt;
 
 pub struct Console {
     position:u32,
-    inputbuffer:[u8;512],
+    inputbuffer:[char;512],
+    inputposition:usize,
     inputready:bool
 }
 
@@ -35,7 +36,7 @@ pub enum Color {
     White      = 15,
 }
 
-static mut console: Console = Console {position: 0, inputbuffer: [0;512], inputready: false};
+static mut console: Console = Console {position: 0, inputbuffer: [' ';512], inputready: false, inputposition: 0};
 
 impl Console {
     pub fn init() -> &'static mut Console {
@@ -145,9 +146,10 @@ impl Console {
 
     pub fn read_string(&mut self,  buf: &mut [u8;128]) {
         self.inputready = false;
-        // while !self.inputready {
-            // Waiting for input
-        // }
+         while !self.inputready {
+            //TODO: This loop should be empty
+            asm::nop();
+        }
         self.print_string("x");
         // let buf = &self.inputbuffer;
         // return from_utf8(buf).unwrap();
@@ -177,6 +179,8 @@ fn on_keyboard_interrupt() {
         let c = scancode_to_char(scancode);
         unsafe {
             console.print_char(c);
+            console.inputbuffer[console.inputposition] = c;
+            console.inputposition += 1;
             if c == '\n' {
                 console.inputready = true;
             }
