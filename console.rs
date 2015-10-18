@@ -144,15 +144,17 @@ impl Console {
         }
     }
 
-    pub fn read_string(&mut self,  buf: &mut [u8;128]) {
+    pub fn read_string<'a>(&mut self,  buf: &'a mut [u8;128]) -> &'a str {
         self.inputready = false;
          while !self.inputready {
             //TODO: This loop should be empty
             asm::nop();
         }
-        self.print_string("x");
         // let buf = &self.inputbuffer;
-        // return from_utf8(buf).unwrap();
+        for i in  0..self.inputposition {
+            buf[i] = self.inputbuffer[i] as u8;
+        }
+        return from_utf8(buf).unwrap();
     }
 
     fn update_cursor(&self) {

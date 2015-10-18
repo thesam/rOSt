@@ -65,7 +65,7 @@ pub fn main() {
     let mut buf:[u8;128] = [0;128];
     let foo = console.read_string(&mut buf);
     console.print_string("You wrote: ");
-    console.print_string(from_utf8(&buf).unwrap());
+    console.print_string(foo);
 }
 
 // Stubs for functions needed to build as static lib.
