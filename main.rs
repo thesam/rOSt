@@ -23,6 +23,7 @@ mod pci;
 mod memory;
 
 use core::ptr::Unique;
+use core::str::from_utf8;
 
 #[lang="owned_box"]
 pub struct Box<T>(Unique<T>);
@@ -35,7 +36,7 @@ pub fn main() {
 
     console.print_string("Welcome to rOSt.\n");
 
-    console.print_string("Begin PCI Scan...\n");
+    console.print_string("\nBegin PCI Scan...\n");
     for bus in 0..255 {
         for slot in 0..31 {
             let vendor = pci::check_vendor(bus,slot);
@@ -52,15 +53,19 @@ pub fn main() {
         }
     }
 
+
+    console.print_string("\nTesting dynamic memory...\n");
     let foo = box 12345;
     console.print_int(*foo);
     let foo2 = box 0;
     console.print_int(*foo2);
     console.print_int(*foo);
 
-    let foo = console.read_string();
+    console.print_string("\nTesting keyboard input...\n");
+    let mut buf:[u8;128] = [0;128];
+    let foo = console.read_string(&mut buf);
     console.print_string("You wrote: ");
-    console.print_string(foo);
+    console.print_string(from_utf8(&buf).unwrap());
 }
 
 // Stubs for functions needed to build as static lib.

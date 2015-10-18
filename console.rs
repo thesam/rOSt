@@ -82,27 +82,37 @@ impl Console {
             if (current_row < 24) {
                 self.position += 80;
             } else {
-                // Scroll everything one row up.
-                let mut r = 0..80 * 25;
-                loop {
-                    match r.next() {
-                        Option::Some(x) => {
-                            unsafe {
-                                *((0xb8000 + x*2) as *mut u16) = *((0xb8000 + (x+80)*2) as *mut u16)
-                            }
-                        },
-                        Option::None =>{break}
-                    }
-                }
+                self.scroll_content_up();
             }
         } else {
             unsafe {
                 *((0xb8000 + self.position*2) as *mut u8) = c as u8;
                 *((0xb8000 + self.position*2 + 1) as *mut u8) = 0x0f;
             }
-            self.position += 1;
+            let col = self.position % 80;
+            if (col == 79 && self.current_row() == 24) {
+                self.scroll_content_up();
+                self.position -= col;
+            } else {
+                self.position += 1;
+            }
         }
         self.update_cursor();
+    }
+
+    fn scroll_content_up(&self) {
+        // Scroll everything one row up.
+        let mut r = 0..80 * 25;
+        loop {
+            match r.next() {
+                Option::Some(x) => {
+                    unsafe {
+                        *((0xb8000 + x*2) as *mut u16) = *((0xb8000 + (x+80)*2) as *mut u16)
+                    }
+                },
+                Option::None =>{break}
+            }
+        }
     }
 
     #[no_stack_check]
@@ -133,12 +143,14 @@ impl Console {
         }
     }
 
-    pub fn read_string(&mut self) -> &'static str {
-        while !self.inputready {
+    pub fn read_string(&mut self,  buf: &mut [u8;128]) {
+        self.inputready = false;
+        // while !self.inputready {
             // Waiting for input
-        }
-        let buf = &self.inputbuffer;
-        return from_utf8(buf).unwrap();
+        // }
+        self.print_string("x");
+        // let buf = &self.inputbuffer;
+        // return from_utf8(buf).unwrap();
     }
 
     fn update_cursor(&self) {
@@ -166,7 +178,7 @@ fn on_keyboard_interrupt() {
         unsafe {
             console.print_char(c);
             if c == '\n' {
-
+                console.inputready = true;
             }
         }
     }
