@@ -36,7 +36,7 @@ pub enum Color {
     White      = 15,
 }
 
-static mut console: Console = Console {position: 0, inputbuffer: [' ';512], inputready: false, inputposition: 0};
+pub static mut console: Console = Console {position: 0, inputbuffer: [' ';512], inputready: false, inputposition: 0};
 
 impl Console {
     pub fn init() -> &'static mut Console {
