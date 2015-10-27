@@ -62,10 +62,13 @@ pub fn main() {
     console.print_int(*foo);
 
     console.print_string("\nTesting keyboard input...\n");
-    let mut buf:[u8;128] = [0;128];
-    let foo = console.read_string(&mut buf);
-    console.print_string("You wrote: ");
-    console.print_string(foo);
+    while true {
+        console.print_string("$ ");
+        let mut buf:[u8;128] = [0;128];
+        let foo = console.read_string(&mut buf);
+        console.print_string("You wrote: ");
+        console.print_string(foo);
+    }
 }
 
 // Stubs for functions needed to build as static lib.

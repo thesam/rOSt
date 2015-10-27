@@ -67,6 +67,9 @@ impl Console {
         loop {
             match bytes.next() {
                 Option::Some(x) => {
+                    if x == '\0' {
+                        break;
+                    }
                     self.print_char(x);
                 },
                 Option::None =>{break}
@@ -154,6 +157,7 @@ impl Console {
         for i in  0..self.inputposition {
             buf[i] = self.inputbuffer[i] as u8;
         }
+        self.inputposition = 0;
         return from_utf8(buf).unwrap();
     }
 
