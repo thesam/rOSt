@@ -7,6 +7,7 @@
 #![feature(core)]
 #![feature(unique)]
 #![feature(core_str_ext)]
+#![feature(raw)]
 
 //extern crate core;
 

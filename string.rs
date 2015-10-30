@@ -17,11 +17,10 @@ impl String {
 
 impl AsRef<str> for String {
     fn as_ref(&self) -> &str {
-        match self.chars.content {
-            Some(chars) => {
-                from_utf8(chars as &mut [u8]).unwrap()
-            },
-            None => ""
+        if self.chars.length > 0 {
+            from_utf8(self.chars.as_slice()).unwrap()
+        } else {
+            ""
         }
     }
 }

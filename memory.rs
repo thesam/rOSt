@@ -14,7 +14,7 @@ unsafe fn allocate(size: usize, _align: usize) -> *mut u8 {
     return p;
 }
 
-pub fn alloc(size: u32) -> *mut u8 {
+pub fn alloc(size: usize) -> *mut u8 {
     unsafe {
         return allocate(size as usize, 0 as usize);
     }
