@@ -22,6 +22,8 @@ mod error;
 mod pci;
 mod memory;
 mod shell;
+mod array;
+mod string;
 
 use core::ptr::Unique;
 use core::str::from_utf8;
@@ -63,7 +65,7 @@ pub fn main() {
     console.print_int(*foo);
 
     console.print_string("\nTesting keyboard input...\n");
-    while true {
+    loop {
         console.print_string(shell::current_user());
         console.print_string("@");
         console.print_string(shell::hostname());
@@ -72,7 +74,7 @@ pub fn main() {
         console.print_string("$ ");
         let mut buf:[u8;128] = [0;128];
         let foo = console.read_string(&mut buf);
-        shell::handle(foo);
+        shell::handle(foo.as_ref());
     }
 }
 

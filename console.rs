@@ -4,9 +4,11 @@ use core::option::Option;
 use core::iter::Iterator;
 //use core::str::StrExt;
 use core::str::from_utf8;
+use array::Array;
 
 use asm;
 use interrupt;
+use string::String;
 
 pub struct Console {
     position:u32,
@@ -147,18 +149,18 @@ impl Console {
         }
     }
 
-    pub fn read_string<'a>(&mut self,  buf: &'a mut [u8;128]) -> &'a str {
+    pub fn read_string(&mut self,  buf: &mut [u8;128]) -> String {
+        Array::new();
         self.inputready = false;
          while !self.inputready {
             //TODO: This loop should be empty
             asm::nop();
         }
-        // let buf = &self.inputbuffer;
+        let mut buf = String::new();
         for i in  0..self.inputposition {
-            buf[i] = self.inputbuffer[i] as u8;
+            buf.append(self.inputbuffer[i] as u8);
         }
-        self.inputposition = 0;
-        return from_utf8(buf).unwrap();
+        return buf;
     }
 
     fn update_cursor(&self) {

@@ -4,7 +4,10 @@ pub fn handle(cmd:&str) {
     let console = console::Console::init();
     if cmd.starts_with("ls") {
         console.print_string(".\n");
-    } else {
+    } else if (cmd.starts_with("p")) {
+        console.print_string(cmd);
+    }
+     else {
         console.print_string("404\n");
     }
 }
