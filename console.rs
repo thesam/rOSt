@@ -160,6 +160,7 @@ impl Console {
         for i in  0..self.inputposition {
             buf.append(self.inputbuffer[i] as u8);
         }
+        self.inputposition = 0;
         return buf;
     }
 
