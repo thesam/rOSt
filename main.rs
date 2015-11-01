@@ -11,20 +11,13 @@
 
 //extern crate core;
 
-use console::Color;
+use kernel::console::Color;
 
 // Must be re-exported to be called from assembly
-pub use interrupt::int_handler;
+pub use kernel::interrupt::int_handler;
 
-mod console;
-mod asm;
-mod interrupt;
-mod error;
-mod pci;
-mod memory;
-mod shell;
-mod array;
-mod string;
+mod kernel;
+mod apps;
 
 use core::ptr::Unique;
 use core::str::from_utf8;
@@ -35,7 +28,7 @@ pub struct Box<T>(Unique<T>);
 #[no_mangle]
 #[no_stack_check]
 pub fn main() {
-    let mut console = console::Console::init();
+    let mut console = kernel::console::Console::init();
     console.clear_screen(Color::Black);
 
     console.print_string("Welcome to rOSt.\n");
@@ -43,7 +36,7 @@ pub fn main() {
     console.print_string("\nBegin PCI Scan...\n");
     for bus in 0..255 {
         for slot in 0..31 {
-            let vendor = pci::check_vendor(bus,slot);
+            let vendor = kernel::pci::check_vendor(bus,slot);
             if vendor != 0xFFFF {
                 console.print_string("Device found: ");
                 console.print_int(bus as u32);
@@ -67,15 +60,15 @@ pub fn main() {
 
     console.print_string("\nTesting keyboard input...\n");
     loop {
-        console.print_string(shell::current_user());
+        console.print_string(apps::shell::current_user());
         console.print_string("@");
-        console.print_string(shell::hostname());
+        console.print_string(apps::shell::hostname());
         console.print_string(":");
-        console.print_string(shell::cwd());
+        console.print_string(apps::shell::cwd());
         console.print_string("$ ");
         let mut buf:[u8;128] = [0;128];
         let foo = console.read_string(&mut buf);
-        shell::handle(foo.as_ref());
+        apps::shell::handle(foo.as_ref());
     }
 }
 

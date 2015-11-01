@@ -1,4 +1,4 @@
-use asm;
+use kernel::asm;
 
 // PCI, from OSDev wiki
 pub fn check_vendor(bus: u8, slot: u8) -> u16 {

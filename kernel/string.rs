@@ -1,5 +1,5 @@
-use array::Array;
 use core::str::from_utf8;
+use kernel::array::Array;
 
 pub struct String {
     chars: Array

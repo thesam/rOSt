@@ -1,4 +1,4 @@
-use console;
+use kernel::console;
 
 pub fn handle(cmd:&str) {
     let console = console::Console::init();

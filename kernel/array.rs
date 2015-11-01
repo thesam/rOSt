@@ -1,6 +1,6 @@
 use core::mem;
 use core::raw::Slice;
-use memory;
+use kernel::memory;
 
 pub struct Array {
     content: *mut u8,

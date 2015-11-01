@@ -1,4 +1,4 @@
-use asm;
+use kernel::asm;
 
 #[allow(dead_code)]
 #[derive(Copy, Clone)]
@@ -7,7 +7,7 @@ struct IDTEntry {
     selector: u16,
     zero: u8,
     type_attr: u8,
-    offset_hi: u16       
+    offset_hi: u16
 }
 
 struct IDT {
@@ -78,8 +78,8 @@ fn init_pic() {
 	asm::out8(0x21 , 0x20);
 	asm::out8(0xA1 , 0x28);
 
-	asm::out8(0x21 , 0x00);  
-	asm::out8(0xA1 , 0x00);  
+	asm::out8(0x21 , 0x00);
+	asm::out8(0xA1 , 0x00);
 
 	asm::out8(0x21 , 0x01);
 	asm::out8(0xA1 , 0x01);
@@ -102,4 +102,3 @@ pub extern fn int_handler() {
     // Ack interrupt to be able to get the next one
     asm::out8(0x20,0x20);
 }
-

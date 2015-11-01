@@ -4,11 +4,11 @@ use core::option::Option;
 use core::iter::Iterator;
 //use core::str::StrExt;
 use core::str::from_utf8;
-use array::Array;
+use kernel::array::Array;
 
-use asm;
-use interrupt;
-use string::String;
+use kernel::asm;
+use kernel::interrupt;
+use kernel::string::String;
 
 pub struct Console {
     position:u32,
