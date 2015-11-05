@@ -1,5 +1,6 @@
 use kernel::console::Console;
 use sys;
+use apps::ls;
 
 pub fn run(console: &mut Console) {
     loop {
@@ -18,7 +19,7 @@ fn handle(console: &mut Console, cmd:&str) {
     console.print_string("You wrote:\n");
     console.print_string(cmd);
     if cmd.starts_with("ls") {
-        console.print_string(".\n");
+        ls::run(console);
     } else if (cmd.starts_with("p")) {
         console.print_string(cmd);
     }
