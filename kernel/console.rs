@@ -149,7 +149,7 @@ impl Console {
         }
     }
 
-    pub fn read_string(&mut self,  buf: &mut [u8;128]) -> String {
+    pub fn read_string(&mut self) -> String {
         Array::new();
         self.inputready = false;
          while !self.inputready {

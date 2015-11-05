@@ -17,6 +17,7 @@ use kernel::console::Color;
 pub use kernel::interrupt::int_handler;
 
 mod kernel;
+mod sys;
 mod apps;
 
 use core::ptr::Unique;
@@ -59,17 +60,7 @@ pub fn main() {
     console.print_int(*foo);
 
     console.print_string("\nTesting keyboard input...\n");
-    loop {
-        console.print_string(apps::shell::current_user());
-        console.print_string("@");
-        console.print_string(apps::shell::hostname());
-        console.print_string(":");
-        console.print_string(apps::shell::cwd());
-        console.print_string("$ ");
-        let mut buf:[u8;128] = [0;128];
-        let foo = console.read_string(&mut buf);
-        apps::shell::handle(foo.as_ref());
-    }
+    apps::shell::run(console);
 }
 
 // Stubs for functions needed to build as static lib.
