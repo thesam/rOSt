@@ -85,7 +85,7 @@ impl Console {
             let col = self.position % 80;
             self.position -= col;
             let current_row = self.current_row();
-            if (current_row < 24) {
+            if current_row < 24 {
                 self.position += 80;
             } else {
                 self.scroll_content_up();
@@ -96,7 +96,7 @@ impl Console {
                 *((0xb8000 + self.position*2 + 1) as *mut u8) = 0x0f;
             }
             let col = self.position % 80;
-            if (col == 79 && self.current_row() == 24) {
+            if col == 79 && self.current_row() == 24 {
                 self.scroll_content_up();
                 self.position -= col;
             } else {

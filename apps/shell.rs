@@ -20,7 +20,7 @@ fn handle(console: &mut Console, cmd:&str) {
     console.print_string(cmd);
     if cmd.starts_with("ls") {
         ls::run(console);
-    } else if (cmd.starts_with("p")) {
+    } else if cmd.starts_with("p") {
         console.print_string(cmd);
     }
      else {

@@ -63,7 +63,11 @@ pub fn main() {
     apps::shell::run(console);
 }
 
+#[lang = "box_free"]
+unsafe fn box_free<T>(ptr: *mut T) {
+    //TODO: Impl
+}
+
 // Stubs for functions needed to build as static lib.
-#[lang = "stack_exhausted"] extern fn stack_exhausted() {}
 #[lang = "eh_personality"] extern fn eh_personality() {}
 #[lang = "panic_fmt"] fn panic_fmt() -> ! { loop{} }
