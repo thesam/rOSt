@@ -10,6 +10,7 @@ SECTIONS {
 
     .main : {
         main.o(.text.main)
+	main.o(*)
     } >ram
 
     .lib : {

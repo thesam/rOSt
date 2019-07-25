@@ -9,7 +9,7 @@ all: floppy.img
 
 .PHONY: clean run
 
-main.o: kernel/*.rs apps/*.rs libcore.rlib
+main.o: main.rs kernel/*.rs apps/*.rs libcore.rlib
 	$(RUSTC) -L . -O --target i686-unknown-linux-gnu --crate-type lib --emit obj -o $@ -C relocation-model=static -Ctarget-cpu=generic main.rs
 
 lib.o: kernel/lib.asm
